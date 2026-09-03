@@ -1,5 +1,5 @@
 import { ERA_ORDER, ERA_COLORS, BiblicalEra } from '@/data/bibleBooks';
-import { getEraRanges, CHRONOLOGICAL_PLAN } from '@/data/chronologicalPlan';
+import { getEraRanges, CHRONOLOGICAL_PLAN, TOTAL_READING_CHAPTERS } from '@/data/chronologicalPlan';
 import { useMemo } from 'react';
 
 interface TimelineBarProps {
@@ -12,6 +12,9 @@ export function TimelineBar({ currentIndex, onEraSelect }: TimelineBarProps) {
 
   const currentEra = CHRONOLOGICAL_PLAN[currentIndex]?.era || 'Patriarchal';
 
+  const clampedIndex = Math.max(0, Math.min(currentIndex, TOTAL_READING_CHAPTERS - 1));
+  const progressPct = (clampedIndex / (TOTAL_READING_CHAPTERS - 1)) * 100;
+
   return (
     <div className="border-b border-gold-300/30 bg-parchment-50/80 backdrop-blur-sm dark:bg-ink-100/80">
       <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto">
@@ -22,7 +25,7 @@ export function TimelineBar({ currentIndex, onEraSelect }: TimelineBarProps) {
 
           return (
             <button
-              key={era}
+              key={`era-${era}-${i}`}
               onClick={() => range && onEraSelect(range.startIndex)}
               className={`group relative flex flex-col items-center px-4 py-1.5 rounded transition-all duration-300 flex-shrink-0 ${
                 isActive
@@ -61,29 +64,30 @@ export function TimelineBar({ currentIndex, onEraSelect }: TimelineBarProps) {
       <div className="relative h-2 px-4 pb-1">
         <div className="absolute inset-x-4 h-1 rounded-full bg-parchment-200/40 dark:bg-ink-50/30" />
         <div className="relative h-1 flex">
-          {ranges.map((range) => {
+          {ranges.map((range, i) => {
             const widthPct =
-              ((range.endIndex - range.startIndex + 1) / CHRONOLOGICAL_PLAN.length) * 100;
-            const isInRange = currentIndex >= range.startIndex && currentIndex <= range.endIndex;
+              ((range.endIndex - range.startIndex + 1) / TOTAL_READING_CHAPTERS) * 100;
+            const isInRange = clampedIndex >= range.startIndex && clampedIndex <= range.endIndex;
             return (
               <div
-                key={range.era}
-                className="h-full rounded-full transition-all duration-300"
+                key={`seg-${range.era}-${i}`}
+                className="h-full transition-all duration-300"
                 style={{
                   width: `${widthPct}%`,
                   backgroundColor: ERA_COLORS[range.era],
                   opacity: isInRange ? 1 : 0.25,
                   boxShadow: isInRange ? `0 0 6px ${ERA_COLORS[range.era]}` : 'none',
+                  borderRadius: i === 0 ? '4px 0 0 4px' : i === ranges.length - 1 ? '0 4px 4px 0' : '0',
                 }}
               />
             );
           })}
         </div>
         <div
-          className="absolute top-0 h-3 w-3 -translate-y-1/2 rounded-full border-2 border-gold-300 bg-parchment-100 dark:bg-ink-200 transition-all duration-500"
+          className="absolute top-0 h-3 w-3 rounded-full border-2 border-gold-300 bg-parchment-100 dark:bg-ink-200 transition-all duration-500"
           style={{
-            left: `calc(${(currentIndex / CHRONOLOGICAL_PLAN.length) * 100}% + 1rem)`,
-            boxShadow: '0 0 10px rgba(197, 160, 89, 0.6)',
+            left: `calc(${progressPct}% + 1rem)`,
+            boxShadow: '0 0 10px rgba(212, 175, 55, 0.6)',
             transform: 'translate(-50%, -50%)',
           }}
         />
