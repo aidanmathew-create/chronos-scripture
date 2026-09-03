@@ -1,133 +1,222 @@
-export interface ReadingEntry {
-  bookId: string;
-  chapter: number;
-}
-
-import { BIBLE_BOOKS, BOOK_MAP, BiblicalEra } from './bibleBooks';
+import { BOOK_MAP, BiblicalEra } from './bibleBooks';
 import { MAP_LOCATIONS } from './mapData';
 
-function bk(bookId: string, chapter: number): ReadingEntry {
-  return { bookId, chapter };
-}
-
-export interface ChronologicalEntry extends ReadingEntry {
+export interface ChronologicalEntry {
+  id: number;
   index: number;
-  era: BiblicalEra;
+  bookId: string;
   bookName: string;
+  chapter: number;
+  era: BiblicalEra;
   bookAbbr: string;
   chapterCount: number;
 }
 
-function buildCanonicalOrder(): ReadingEntry[] {
-  const entries: ReadingEntry[] = [];
-  for (const book of BIBLE_BOOKS) {
-    for (let ch = 1; ch <= book.chapters; ch++) {
-      entries.push(bk(book.id, ch));
-    }
-  }
-  return entries;
+interface RawEntry {
+  bookId: string;
+  chapter: number;
 }
 
-const INTERLEAVE_INSERTIONS: { afterBookId: string; afterChapter: number; entries: ReadingEntry[] }[] = [
-  { afterBookId: 'GEN', afterChapter: 11, entries: [bk('JOB', 1)] },
-  { afterBookId: 'GEN', afterChapter: 20, entries: [bk('JOB', 2)] },
-  { afterBookId: 'GEN', afterChapter: 31, entries: [bk('JOB', 3)] },
-  { afterBookId: 'GEN', afterChapter: 45, entries: [bk('JOB', 4)] },
-  { afterBookId: 'GEN', afterChapter: 50, entries: [bk('JOB', 5)] },
-  { afterBookId: 'JDG', afterChapter: 4, entries: [bk('PSA', 57)] },
-  { afterBookId: '1SA', afterChapter: 24, entries: [bk('PSA', 142), bk('PSA', 57), bk('PSA', 34)] },
-  { afterBookId: '1SA', afterChapter: 26, entries: [bk('PSA', 7), bk('PSA', 17), bk('PSA', 35), bk('PSA', 54), bk('PSA', 63)] },
-  { afterBookId: '1SA', afterChapter: 30, entries: [bk('PSA', 18)] },
-  { afterBookId: '2SA', afterChapter: 1, entries: [bk('PSA', 60), bk('PSA', 23)] },
-  { afterBookId: '2SA', afterChapter: 7, entries: [bk('PSA', 89), bk('PSA', 132)] },
-  { afterBookId: '2SA', afterChapter: 11, entries: [bk('PSA', 51), bk('PSA', 32)] },
-  { afterBookId: '2SA', afterChapter: 15, entries: [bk('PSA', 3), bk('PSA', 41), bk('PSA', 55), bk('PSA', 61), bk('PSA', 62), bk('PSA', 63)] },
-  { afterBookId: '2SA', afterChapter: 22, entries: [bk('PSA', 18), bk('PSA', 116), bk('PSA', 117), bk('PSA', 118)] },
-  { afterBookId: '2SA', afterChapter: 23, entries: [bk('PSA', 2)] },
-  { afterBookId: '1KI', afterChapter: 3, entries: [bk('PSA', 72), bk('PRO', 1)] },
-  { afterBookId: '1KI', afterChapter: 5, entries: [bk('PSA', 45), bk('SNG', 1)] },
-  { afterBookId: '1KI', afterChapter: 8, entries: [bk('PSA', 136), bk('PSA', 134), bk('PSA', 135)] },
-  { afterBookId: '1KI', afterChapter: 11, entries: [bk('ECC', 1)] },
-  { afterBookId: '2KI', afterChapter: 15, entries: [bk('ISA', 1), bk('HOS', 1), bk('AMO', 1)] },
-  { afterBookId: '2KI', afterChapter: 17, entries: [bk('ISA', 2), bk('MIC', 1), bk('HOS', 2), bk('AMO', 2)] },
-  { afterBookId: '2KI', afterChapter: 18, entries: [bk('ISA', 36), bk('ISA', 37)] },
-  { afterBookId: '2KI', afterChapter: 19, entries: [bk('ISA', 38), bk('ISA', 39)] },
-  { afterBookId: '2KI', afterChapter: 20, entries: [bk('ISA', 40), bk('ISA', 41)] },
-  { afterBookId: '2KI', afterChapter: 21, entries: [bk('NAM', 1), bk('ZEP', 1)] },
-  { afterBookId: '2KI', afterChapter: 22, entries: [bk('JER', 1), bk('HAB', 1)] },
-  { afterBookId: '2KI', afterChapter: 23, entries: [bk('JER', 2), bk('JER', 3)] },
-  { afterBookId: '2KI', afterChapter: 24, entries: [bk('JER', 4), bk('JER', 5), bk('JER', 6)] },
-  { afterBookId: '2KI', afterChapter: 25, entries: [bk('JER', 52), bk('LAM', 1), bk('LAM', 2), bk('LAM', 3), bk('LAM', 4), bk('LAM', 5), bk('EZK', 1), bk('EZK', 2), bk('EZK', 3), bk('EZK', 4), bk('EZK', 5), bk('EZK', 6), bk('EZK', 7), bk('EZK', 8), bk('EZK', 9), bk('EZK', 10), bk('EZK', 11), bk('EZK', 12), bk('EZK', 13), bk('EZK', 14), bk('EZK', 15), bk('EZK', 16), bk('EZK', 17), bk('EZK', 18), bk('EZK', 19), bk('EZK', 20), bk('EZK', 21), bk('EZK', 22), bk('EZK', 23), bk('EZK', 24), bk('EZK', 25), bk('EZK', 26), bk('EZK', 27), bk('EZK', 28), bk('EZK', 29), bk('EZK', 30), bk('EZK', 31), bk('EZK', 32), bk('EZK', 33), bk('EZK', 34), bk('EZK', 35), bk('EZK', 36), bk('EZK', 37), bk('EZK', 38), bk('EZK', 39), bk('EZK', 40), bk('EZK', 41), bk('EZK', 42), bk('EZK', 43), bk('EZK', 44), bk('EZK', 45), bk('EZK', 46), bk('EZK', 47), bk('EZK', 48), bk('OBA', 1)] },
-  { afterBookId: 'EZR', afterChapter: 4, entries: [bk('EZK', 25), bk('ZEC', 1), bk('HAG', 1)] },
-  { afterBookId: 'EZR', afterChapter: 6, entries: [bk('ZEC', 2), bk('ZEC', 3), bk('ZEC', 4), bk('HAG', 2)] },
-  { afterBookId: 'EZR', afterChapter: 7, entries: [bk('MAL', 1)] },
-  { afterBookId: 'NEH', afterChapter: 13, entries: [bk('MAL', 2), bk('MAL', 3), bk('MAL', 4)] },
-  { afterBookId: 'EST', afterChapter: 4, entries: [bk('DAN', 1), bk('DAN', 2)] },
-  { afterBookId: 'EST', afterChapter: 10, entries: [bk('DAN', 3), bk('DAN', 4), bk('DAN', 5), bk('DAN', 6), bk('DAN', 7), bk('DAN', 8), bk('DAN', 9), bk('DAN', 10), bk('DAN', 11), bk('DAN', 12)] },
-  { afterBookId: 'JHN', afterChapter: 12, entries: [bk('MAT', 21), bk('MAT', 22), bk('MAT', 23), bk('MAT', 24), bk('MAT', 25), bk('MAT', 26)] },
-  { afterBookId: 'JHN', afterChapter: 19, entries: [bk('MAT', 27)] },
-  { afterBookId: 'JHN', afterChapter: 20, entries: [bk('MAT', 28), bk('MRK', 16), bk('LUK', 24)] },
-  { afterBookId: 'ACT', afterChapter: 2, entries: [bk('JAS', 1), bk('JAS', 2), bk('JAS', 3), bk('JAS', 4), bk('JAS', 5)] },
-  { afterBookId: 'ACT', afterChapter: 15, entries: [bk('GAL', 1), bk('GAL', 2), bk('GAL', 3), bk('GAL', 4), bk('GAL', 5), bk('GAL', 6)] },
-  { afterBookId: 'ACT', afterChapter: 18, entries: [bk('1TH', 1), bk('1TH', 2), bk('1TH', 3), bk('1TH', 4), bk('1TH', 5), bk('2TH', 1), bk('2TH', 2), bk('2TH', 3), bk('1CO', 1), bk('1CO', 2), bk('1CO', 3), bk('1CO', 4), bk('1CO', 5), bk('1CO', 6), bk('1CO', 7), bk('1CO', 8), bk('1CO', 9), bk('1CO', 10), bk('1CO', 11), bk('1CO', 12), bk('1CO', 13), bk('1CO', 14), bk('1CO', 15), bk('1CO', 16), bk('2CO', 1), bk('2CO', 2), bk('2CO', 3), bk('2CO', 4), bk('2CO', 5), bk('2CO', 6), bk('2CO', 7), bk('2CO', 8), bk('2CO', 9), bk('2CO', 10), bk('2CO', 11), bk('2CO', 12), bk('2CO', 13), bk('ROM', 1), bk('ROM', 2), bk('ROM', 3), bk('ROM', 4), bk('ROM', 5), bk('ROM', 6), bk('ROM', 7), bk('ROM', 8), bk('ROM', 9), bk('ROM', 10), bk('ROM', 11), bk('ROM', 12), bk('ROM', 13), bk('ROM', 14), bk('ROM', 15), bk('ROM', 16)] },
-  { afterBookId: 'ACT', afterChapter: 20, entries: [bk('EPH', 1), bk('EPH', 2), bk('EPH', 3), bk('EPH', 4), bk('EPH', 5), bk('EPH', 6), bk('PHP', 1), bk('PHP', 2), bk('PHP', 3), bk('PHP', 4), bk('COL', 1), bk('COL', 2), bk('COL', 3), bk('COL', 4), bk('PHM', 1), bk('1TI', 1), bk('1TI', 2), bk('1TI', 3), bk('1TI', 4), bk('1TI', 5), bk('1TI', 6), bk('TIT', 1), bk('TIT', 2), bk('TIT', 3)] },
-  { afterBookId: 'ACT', afterChapter: 28, entries: [bk('2TI', 1), bk('2TI', 2), bk('2TI', 3), bk('2TI', 4), bk('HEB', 1), bk('HEB', 2), bk('HEB', 3), bk('HEB', 4), bk('HEB', 5), bk('HEB', 6), bk('HEB', 7), bk('HEB', 8), bk('HEB', 9), bk('HEB', 10), bk('HEB', 11), bk('HEB', 12), bk('HEB', 13), bk('1PE', 1), bk('1PE', 2), bk('1PE', 3), bk('1PE', 4), bk('1PE', 5), bk('2PE', 1), bk('2PE', 2), bk('2PE', 3), bk('1JN', 1), bk('1JN', 2), bk('1JN', 3), bk('1JN', 4), bk('1JN', 5), bk('2JN', 1), bk('3JN', 1), bk('JUD', 1), bk('REV', 1), bk('REV', 2), bk('REV', 3), bk('REV', 4), bk('REV', 5), bk('REV', 6), bk('REV', 7), bk('REV', 8), bk('REV', 9), bk('REV', 10), bk('REV', 11), bk('REV', 12), bk('REV', 13), bk('REV', 14), bk('REV', 15), bk('REV', 16), bk('REV', 17), bk('REV', 18), bk('REV', 19), bk('REV', 20), bk('REV', 21), bk('REV', 22)] },
+function r(bookId: string, chapter: number): RawEntry {
+  return { bookId, chapter };
+}
+
+function range(bookId: string, from: number, to: number): RawEntry[] {
+  const out: RawEntry[] = [];
+  for (let ch = from; ch <= to; ch++) out.push(r(bookId, ch));
+  return out;
+}
+
+const PSALM_INTERLEAVES: [string, number, number[]][] = [
+  ['1SA', 16, [23]],
+  ['1SA', 17, [144]],
+  ['1SA', 19, [59]],
+  ['1SA', 21, [56, 34]],
+  ['1SA', 22, [52, 142]],
+  ['1SA', 23, [54, 63]],
+  ['1SA', 24, [57, 7]],
+  ['1SA', 26, [17]],
+  ['2SA', 1, [60]],
+  ['2SA', 7, [89, 132, 2]],
+  ['2SA', 11, [51, 32]],
+  ['2SA', 15, [3, 41, 55, 61, 62]],
+  ['2SA', 22, [18, 116, 117, 118]],
+  ['1KI', 3, [72]],
+  ['1KI', 5, [45]],
+  ['1KI', 8, [136, 134, 135]],
 ];
 
-function buildChronologicalOrder(): ReadingEntry[] {
-  const canonical = buildCanonicalOrder();
-  const insertedBookChapters = new Set<string>();
+const ACT_INTERLEAVES: [number, RawEntry[]][] = [
+  [2, range('JAS', 1, 5)],
+  [15, range('GAL', 1, 6)],
+  [
+    18,
+    [
+      ...range('1TH', 1, 5),
+      ...range('2TH', 1, 3),
+      ...range('1CO', 1, 16),
+      ...range('2CO', 1, 13),
+      ...range('ROM', 1, 16),
+    ],
+  ],
+  [
+    20,
+    [
+      ...range('EPH', 1, 6),
+      ...range('PHP', 1, 4),
+      ...range('COL', 1, 4),
+      ...range('PHM', 1, 1),
+      ...range('1TI', 1, 6),
+      ...range('TIT', 1, 3),
+    ],
+  ],
+  [
+    28,
+    [
+      ...range('2TI', 1, 4),
+      ...range('HEB', 1, 13),
+      ...range('1PE', 1, 5),
+      ...range('2PE', 1, 3),
+      ...range('1JN', 1, 5),
+      ...range('2JN', 1, 1),
+      ...range('3JN', 1, 1),
+      ...range('JUD', 1, 1),
+      ...range('REV', 1, 22),
+    ],
+  ],
+];
 
-  for (const ins of INTERLEAVE_INSERTIONS) {
-    for (const e of ins.entries) {
-      insertedBookChapters.add(`${e.bookId}:${e.chapter}`);
+function buildPlan(): RawEntry[] {
+  const plan: RawEntry[] = [];
+
+  // 1. Creation & Primeval: Genesis 1-11
+  plan.push(...range('GEN', 1, 11));
+
+  // 2. Patriarchal Era: Job 1-42, Genesis 12-50
+  plan.push(...range('JOB', 1, 42));
+  plan.push(...range('GEN', 12, 50));
+
+  // 3. Exodus & Wilderness: Exodus, Leviticus, Numbers, Deuteronomy
+  plan.push(...range('EXO', 1, 40));
+  plan.push(...range('LEV', 1, 27));
+  plan.push(...range('NUM', 1, 36));
+  plan.push(...range('DEU', 1, 34));
+
+  // 4. Conquest & Judges: Joshua, Judges, Ruth
+  plan.push(...range('JOS', 1, 24));
+  plan.push(...range('JDG', 1, 21));
+  plan.push(...range('RUT', 1, 4));
+
+  // 5. United Monarchy: 1Sam, 2Sam, 1Chr, Psalms (interleaved), 1Kgs 1-11, 2Chr 1-9, Prov, Ecc, Song
+  const interleavedPsalms = new Set<number>();
+  for (const [, , psalms] of PSALM_INTERLEAVES) {
+    for (const p of psalms) interleavedPsalms.add(p);
+  }
+
+  const psalmsAfter = (bookId: string, ch: number): RawEntry[] => {
+    const out: RawEntry[] = [];
+    for (const [bid, anchorCh, psalms] of PSALM_INTERLEAVES) {
+      if (bid === bookId && anchorCh === ch) {
+        for (const p of psalms) out.push(r('PSA', p));
+      }
+    }
+    return out;
+  };
+
+  for (let ch = 1; ch <= 31; ch++) {
+    plan.push(r('1SA', ch));
+    plan.push(...psalmsAfter('1SA', ch));
+  }
+
+  for (let ch = 1; ch <= 24; ch++) {
+    plan.push(r('2SA', ch));
+    plan.push(...psalmsAfter('2SA', ch));
+  }
+
+  plan.push(...range('1CH', 1, 29));
+
+  for (let p = 1; p <= 150; p++) {
+    if (!interleavedPsalms.has(p)) plan.push(r('PSA', p));
+  }
+
+  for (let ch = 1; ch <= 11; ch++) {
+    plan.push(r('1KI', ch));
+    plan.push(...psalmsAfter('1KI', ch));
+  }
+
+  plan.push(...range('2CH', 1, 9));
+  plan.push(...range('PRO', 1, 31));
+  plan.push(...range('ECC', 1, 12));
+  plan.push(...range('SNG', 1, 8));
+
+  // 6. Divided Kingdom: 1Kgs 12-22, 2Kgs 1-17, 2Chr 10-28, Obadiah, Joel, Amos, Jonah, Hosea, Isaiah, Micah, Nahum, Zephaniah, Habakkuk
+  plan.push(...range('1KI', 12, 22));
+  plan.push(...range('2KI', 1, 17));
+  plan.push(...range('2CH', 10, 28));
+  plan.push(...range('OBA', 1, 1));
+  plan.push(...range('JOL', 1, 3));
+  plan.push(...range('AMO', 1, 9));
+  plan.push(...range('JON', 1, 4));
+  plan.push(...range('HOS', 1, 14));
+  plan.push(...range('ISA', 1, 66));
+  plan.push(...range('MIC', 1, 7));
+  plan.push(...range('NAM', 1, 3));
+  plan.push(...range('ZEP', 1, 3));
+  plan.push(...range('HAB', 1, 3));
+
+  // 7. Exile & Judah's Fall: 2Kgs 18-25, 2Chr 29-36, Jeremiah, Lamentations, Ezekiel, Daniel
+  plan.push(...range('2KI', 18, 25));
+  plan.push(...range('2CH', 29, 36));
+  plan.push(...range('JER', 1, 52));
+  plan.push(...range('LAM', 1, 5));
+  plan.push(...range('EZK', 1, 48));
+  plan.push(...range('DAN', 1, 12));
+
+  // 8. Post-Exilic Return: Ezra, Nehemiah, Esther, Haggai, Zechariah, Malachi
+  plan.push(...range('EZR', 1, 10));
+  plan.push(...range('NEH', 1, 13));
+  plan.push(...range('EST', 1, 10));
+  plan.push(...range('HAG', 1, 2));
+  plan.push(...range('ZEC', 1, 14));
+  plan.push(...range('MAL', 1, 4));
+
+  // 9. Gospels: Matthew, Mark, Luke, John
+  plan.push(...range('MAT', 1, 28));
+  plan.push(...range('MRK', 1, 16));
+  plan.push(...range('LUK', 1, 24));
+  plan.push(...range('JHN', 1, 21));
+
+  // 10. Acts with interleaved Epistles and Revelation
+  for (let ch = 1; ch <= 28; ch++) {
+    plan.push(r('ACT', ch));
+    for (const [anchorCh, entries] of ACT_INTERLEAVES) {
+      if (anchorCh === ch) plan.push(...entries);
     }
   }
 
-  const filtered = canonical.filter((e) => !insertedBookChapters.has(`${e.bookId}:${e.chapter}`));
-
-  const result: ReadingEntry[] = [...filtered];
-  const insertions = [...INTERLEAVE_INSERTIONS].sort((a, b) => {
-    const aIdx = filtered.findIndex((e) => e.bookId === a.afterBookId && e.chapter === a.afterChapter);
-    const bIdx = filtered.findIndex((e) => e.bookId === b.afterBookId && e.chapter === b.afterChapter);
-    return bIdx - aIdx;
-  });
-
-  for (const ins of insertions) {
-    const idx = result.findIndex((e) => e.bookId === ins.afterBookId && e.chapter === ins.afterChapter);
-    if (idx >= 0) {
-      result.splice(idx + 1, 0, ...ins.entries);
-    }
-  }
-
-  return result;
+  return plan;
 }
 
-const RAW_ORDER = buildChronologicalOrder();
+const RAW_PLAN = buildPlan();
 
-const seen = new Set<string>();
-const DEDUPED_ORDER = RAW_ORDER.filter((e) => {
-  const key = `${e.bookId}:${e.chapter}`;
-  if (seen.has(key)) return false;
-  seen.add(key);
-  return true;
+export const CHRONOLOGICAL_PLAN: ChronologicalEntry[] = RAW_PLAN.map((entry, idx) => {
+  const book = BOOK_MAP[entry.bookId];
+  return {
+    id: idx,
+    index: idx,
+    bookId: entry.bookId,
+    bookName: book.name,
+    chapter: entry.chapter,
+    era: book.era,
+    bookAbbr: book.abbr,
+    chapterCount: book.chapters,
+  };
 });
 
-export const CHRONOLOGICAL_PLAN: ChronologicalEntry[] = DEDUPED_ORDER
-  .filter((entry) => BOOK_MAP[entry.bookId] !== undefined)
-  .map((entry, index) => {
-    const book = BOOK_MAP[entry.bookId];
-    return {
-      ...entry,
-      index,
-      era: book.era,
-      bookName: book.name,
-      bookAbbr: book.abbr,
-      chapterCount: book.chapters,
-    };
-  });
+export const TOTAL_READING_CHAPTERS = 1189;
 
-export const TOTAL_READING_CHAPTERS = CHRONOLOGICAL_PLAN.length;
+// Backward-compatible alias used by existing components
+export { CHRONOLOGICAL_PLAN as READING_PLAN };
 
 export function getEntry(index: number): ChronologicalEntry | null {
   if (index < 0 || index >= CHRONOLOGICAL_PLAN.length) return null;
