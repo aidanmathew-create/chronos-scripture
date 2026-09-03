@@ -10,7 +10,7 @@ interface TimelineBarProps {
 export function TimelineBar({ currentIndex, onEraSelect }: TimelineBarProps) {
   const ranges = useMemo(() => getEraRanges(), []);
 
-  const currentEra = CHRONOLOGICAL_PLAN[currentIndex]?.era || 'Patriarchal';
+  const currentEra = CHRONOLOGICAL_PLAN[currentIndex]?.era || 'Primeval';
 
   const clampedIndex = Math.max(0, Math.min(currentIndex, TOTAL_READING_CHAPTERS - 1));
   const progressPct = (clampedIndex / (TOTAL_READING_CHAPTERS - 1)) * 100;

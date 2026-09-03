@@ -12,12 +12,14 @@ interface BibleMapProps {
 
 function createPinIcon(era: BiblicalEra, isActive: boolean): L.DivIcon {
   const colors: Record<BiblicalEra, string> = {
+    Primeval: '#6B8E23',
     Patriarchal: '#8B6914',
-    Exodus: '#C5A059',
-    Monarchy: '#5C1D24',
-    Exile: '#3A6B5C',
+    'Exodus & Wilderness': '#C5A059',
+    Monarchy: '#6B0F1A',
+    'Divided Kingdom': '#4A7C59',
+    'Exile & Return': '#3A6B5C',
     Gospel: '#B8860B',
-    Apostolic: '#6B4226',
+    'Apostolic & Revelation': '#6B4226',
   };
   const color = colors[era];
   return L.divIcon({

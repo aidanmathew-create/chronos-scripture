@@ -151,21 +151,25 @@ const BOOK_LANGUAGES: Record<string, string[]> = {
 };
 
 const ERA_DATE_RANGES: Record<BiblicalEra, string> = {
+  Primeval: 'roughly 4000-2000 BC, from creation through the flood and the scattering of nations',
   Patriarchal: 'roughly 2000-1800 BC, during the Middle Bronze Age',
-  Exodus: 'roughly 1446-1406 BC, during the Late Bronze Age',
-  Monarchy: 'roughly 1050-586 BC, from the united kingdom to the divided kingdom',
-  Exile: 'roughly 722-539 BC, spanning the Assyrian and Babylonian dominion',
+  'Exodus & Wilderness': 'roughly 1446-1406 BC, during the Late Bronze Age',
+  Monarchy: 'roughly 1050-931 BC, the united kingdom under Saul, David, and Solomon',
+  'Divided Kingdom': 'roughly 931-586 BC, from the kingdom\'s division to the fall of Jerusalem',
+  'Exile & Return': 'roughly 586-400 BC, spanning the Babylonian exile and the post-exilic restoration',
   Gospel: 'roughly 4 BC-30 AD, during the Roman occupation of Judea',
-  Apostolic: 'roughly 30-95 AD, across the Roman Empire',
+  'Apostolic & Revelation': 'roughly 30-95 AD, across the Roman Empire',
 };
 
 const ERA_KEY_EVENTS: Record<BiblicalEra, string> = {
+  Primeval: 'creation, the fall, the flood, and the tower of Babel shaping the earliest human story',
   Patriarchal: 'small city-states and tribal migrations across the Ancient Near East',
-  Exodus: 'the dominance of Egypt\'s New Kingdom and the emergence of Israel as a nation',
-  Monarchy: 'the rise of Israel\'s kings, the Temple, and the looming Assyrian threat',
-  Exile: 'the fall of Samaria and Jerusalem, and the diaspora under Assyria and Babylon',
+  'Exodus & Wilderness': 'the dominance of Egypt\'s New Kingdom and the emergence of Israel as a nation',
+  Monarchy: 'the rise of Israel\'s kings, the united kingdom, and the building of the Temple',
+  'Divided Kingdom': 'the division of Israel and Judah, the prophetic warnings, and the Assyrian threat',
+  'Exile & Return': 'the fall of Jerusalem, the Babylonian captivity, and the restoration under Persia',
   Gospel: 'Roman rule under the Herodian dynasty and the prefecture of Pontius Pilate',
-  Apostolic: 'the spread of Christianity from Jerusalem to Rome under Pax Romana',
+  'Apostolic & Revelation': 'the spread of Christianity from Jerusalem to Rome under Pax Romana',
 };
 
 const CHAPTER_SECTIONS: Record<string, string[]> = {
@@ -238,13 +242,19 @@ const CHAPTER_SECTIONS: Record<string, string[]> = {
 };
 
 const ERA_TYPOLOGY: Record<BiblicalEra, string[]> = {
-  Patriarchal: [
+  Primeval: [
     'Adam as a type of Christ — the first man brought death; the second Adam brings life (Rom 5:14).',
     'Noah\'s ark prefigures baptism and the Church as the vessel of salvation (1 Pet 3:20-21).',
+    'The tree of life lost in Eden is restored in Christ, the tree of life in the New Jerusalem (Rev 22:2).',
     'Melchizedek, priest-king of Salem, foreshadows Christ\'s eternal priesthood (Heb 7).',
-    'Abraham\'s seed points to Christ, the one seed through whom all nations are blessed (Gal 3:16).',
   ],
-  Exodus: [
+  Patriarchal: [
+    'Abraham\'s seed points to Christ, the one seed through whom all nations are blessed (Gal 3:16).',
+    'Isaac as the beloved son offered on the mountain prefigures the Father giving the Son (Gen 22, John 3:16).',
+    'Jacob\'s ladder foreshadows Christ as the bridge between heaven and earth (John 1:51).',
+    'Joseph\'s suffering and exaltation prefigures Christ\'s rejection and glorification.',
+  ],
+  'Exodus & Wilderness': [
     'Moses as a type of Christ: prophet, mediator, deliverer, and intercessor (Deut 18:15).',
     'The Passover lamb without blemish prefigures Christ, our Passover (1 Cor 5:7).',
     'The rock struck for water is Christ, the source of living water (1 Cor 10:4).',
@@ -258,12 +268,19 @@ const ERA_TYPOLOGY: Record<BiblicalEra, string[]> = {
     'Elijah prefigures John the Baptist in preparing the way (Mal 4:5, Luke 1:17).',
     'The Davidic Covenant promises an eternal throne, fulfilled in Christ (Luke 1:32-33).',
   ],
-  Exile: [
-    'The Suffering Servant (Isa 53) is Christ, bearing the sins of many.',
+  'Divided Kingdom': [
+    'The divided kingdom foreshadows the need for a united King who gathers all God\'s people (John 11:52).',
+    'Elijah\'s fire from heaven prefigures the Spirit\'s purifying work (Acts 2).',
+    'The prophets\' suffering prefigures Christ\'s rejection as a prophet (Luke 13:33).',
+    'Jonah\'s three days in the fish prefigures Christ\'s three days in the tomb (Matt 12:40).',
+    'Isaiah\'s Suffering Servant (Isa 53) is Christ, bearing the sins of many.',
+  ],
+  'Exile & Return': [
     'Daniel\'s Son of Man (Dan 7:13) receives an eternal kingdom — fulfilled in Christ.',
     'The exile and return prefigure the pattern of judgment and restoration in Christ.',
-    'Jonah\'s three days in the fish prefigures Christ\'s three days in the tomb (Matt 12:40).',
     'The new temple vision (Ezek 40-48) points to God dwelling with His people eternally (Rev 21).',
+    'Esther\'s deliverance of her people foreshadows Christ\'s salvation of His Church.',
+    'Zechariah\'s Branch (Zech 6:12) is Christ, the priest-king who builds the true temple.',
   ],
   Gospel: [
     'Jesus as the new Moses: giving the law on a mountain, escaping a slaughter of infants.',
@@ -272,7 +289,7 @@ const ERA_TYPOLOGY: Record<BiblicalEra, string[]> = {
     'Jesus as the Bread of Life, fulfilling the manna.',
     'Jesus as the Good Shepherd, fulfilling Ezekiel 34.',
   ],
-  Apostolic: [
+  'Apostolic & Revelation': [
     'The Church as the new temple of the Holy Spirit.',
     'Christ as the true High Priest, fulfilling the Levitical order (Hebrews).',
     'The Church as the body of Christ, His fullness on earth.',
@@ -445,7 +462,7 @@ export function getChapterHermeneutics(bookId: string, chapter: number): Chapter
       bookId,
       bookName: bookId,
       chapter,
-      era: 'Patriarchal',
+      era: 'Primeval',
       historicalContext: 'Hermeneutical data for this book is not yet available.',
       theologicalNotes: [],
       linguisticNotes: [],

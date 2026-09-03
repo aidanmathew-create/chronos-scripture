@@ -225,7 +225,7 @@ export function getEntry(index: number): ChronologicalEntry | null {
 
 export function getEraForIndex(index: number): BiblicalEra {
   const entry = getEntry(index);
-  return entry ? entry.era : 'Patriarchal';
+  return entry ? entry.era : 'Primeval';
 }
 
 export function getEraRanges(): { era: BiblicalEra; startIndex: number; endIndex: number }[] {
