@@ -2,9 +2,11 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { ChapterData, getChapter } from '@/services/bibleTextService';
 import { ChronologicalEntry, TOTAL_READING_CHAPTERS } from '@/data/chronologicalPlan';
 import { ManuscriptBorder, ChapterOrnament } from '@/components/ManuscriptBorder';
-import { Loader2, BookOpen, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, BookOpen, CheckCircle2, ChevronLeft, ChevronRight, Church } from 'lucide-react';
 import { getMalayalamChapter, MalayalamChapter } from '@/data/malayalamBible';
 import { findLexiconEntriesForWord, LexiconEntry } from '@/data/lexicon';
+import { getLiturgyForChapter } from '@/data/marThomaLiturgy';
+import { LiturgyModal } from '@/components/LiturgyModal';
 import { LanguageMode } from '@/services/progressService';
 
 interface ScriptureReaderProps {
@@ -58,7 +60,13 @@ export function ScriptureReader({
   const [chapterData, setChapterData] = useState<ChapterData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLiturgyOpen, setIsLiturgyOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const liturgyEntries = useMemo(
+    () => getLiturgyForChapter(entry.bookId, entry.chapter),
+    [entry.bookId, entry.chapter],
+  );
 
   const malayalamChapter: MalayalamChapter | null = useMemo(
     () => getMalayalamChapter(entry.bookId, entry.chapter),
@@ -269,34 +277,59 @@ export function ScriptureReader({
       </div>
 
       <div className="border-t border-gold-300/20 px-4 py-3 bg-parchment-50/50 dark:bg-ink-100/50">
-        <button
-          onClick={onComplete}
-          disabled={isCompleted || loading}
-          className={`mx-auto px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
-            isCompleted
-              ? 'text-success-400 cursor-default'
-              : 'bg-transparent border text-burgundy-200 dark:text-gold-200 hover:bg-burgundy-200 hover:text-parchment-50 dark:hover:bg-gold-200 dark:hover:text-ink-100'
-          }`}
-          style={{
-            fontFamily: '"Cormorant Garamond", serif',
-            borderColor: isCompleted ? 'transparent' : '#C5A059',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-          }}
-        >
-          {isCompleted ? (
-            <>
-              <CheckCircle2 size={16} />
-              Chapter Complete
-            </>
-          ) : (
-            <>
-              <CheckCircle2 size={16} />
-              Mark Chapter Complete
-            </>
+        <div className="flex items-center justify-center gap-3">
+          {liturgyEntries.length > 0 && (
+            <button
+              onClick={() => setIsLiturgyOpen(true)}
+              className="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center gap-2 bg-transparent border text-burgundy-300 dark:text-gold-200 hover:bg-burgundy-300/10 dark:hover:bg-gold-200/10"
+              style={{
+                fontFamily: '"Cormorant Garamond", serif',
+                borderColor: '#8B6914',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+              }}
+            >
+              <Church size={16} />
+              Mar Thoma Liturgy
+            </button>
           )}
-        </button>
+          <button
+            onClick={onComplete}
+            disabled={isCompleted || loading}
+            className={`px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
+              isCompleted
+                ? 'text-success-400 cursor-default'
+                : 'bg-transparent border text-burgundy-200 dark:text-gold-200 hover:bg-burgundy-200 hover:text-parchment-50 dark:hover:bg-gold-200 dark:hover:text-ink-100'
+            }`}
+            style={{
+              fontFamily: '"Cormorant Garamond", serif',
+              borderColor: isCompleted ? 'transparent' : '#C5A059',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+          >
+            {isCompleted ? (
+              <>
+                <CheckCircle2 size={16} />
+                Chapter Complete
+              </>
+            ) : (
+              <>
+                <CheckCircle2 size={16} />
+                Mark Chapter Complete
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      <LiturgyModal
+        isOpen={isLiturgyOpen}
+        onClose={() => setIsLiturgyOpen(false)}
+        entries={liturgyEntries}
+        bookName={entry.bookName}
+        chapter={entry.chapter}
+      />
     </div>
   );
 }
