@@ -147,7 +147,7 @@ export function ScriptureReader({
 
       <div
         ref={scrollRef}
-        className={`flex-1 overflow-y-auto px-4 py-6 transition-all duration-500 ${onCompleteGlow ? 'animate-glow-pulse' : ''}`}
+        className={`aged-parchment flex-1 overflow-y-auto px-4 py-6 transition-all duration-500 ${onCompleteGlow ? 'animate-glow-pulse' : ''}`}
       >
         {loading && (
           <div className="flex flex-col items-center justify-center h-full gap-4">

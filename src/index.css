@@ -195,6 +195,35 @@
   .candlelight .candlelight-text-muted {
     color: #B8860B;
   }
+
+  .aged-parchment {
+    background-color: #f5e6ca;
+    background-image:
+      radial-gradient(ellipse at 15% 85%, rgba(210, 180, 140, 0.45) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(232, 211, 176, 0.35) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(245, 230, 202, 0.20) 0%, transparent 70%),
+      linear-gradient(108deg, #f5e6ca 0%, #e8d3b0 40%, #f5e6ca 60%, #d2b48c 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.29 0 0 0 0 0.22 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    box-shadow: inset 0 0 50px rgba(74, 44, 22, 0.35);
+  }
+
+  .aged-parchment .scripture-text {
+    color: #1a0f05;
+  }
+
+  .candlelight .aged-parchment {
+    background-color: #2A2018;
+    background-image:
+      radial-gradient(ellipse at 15% 85%, rgba(58, 40, 24, 0.6) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(74, 44, 22, 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(42, 32, 24, 0.3) 0%, transparent 70%),
+      linear-gradient(108deg, #2A2018 0%, #1E1613 40%, #2A2018 60%, #15100D 100%);
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6);
+  }
+
+  .candlelight .aged-parchment .scripture-text {
+    color: #F3E9D9;
+  }
 }
 
 .leaflet-container {
