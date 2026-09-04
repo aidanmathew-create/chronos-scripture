@@ -324,3 +324,79 @@
 .candlelight ::-webkit-scrollbar-track {
   background: rgba(30, 22, 19, 0.3);
 }
+
+/* ── Galaxy S10e / compact mobile (≤ 380px) ── */
+@media screen and (max-width: 380px) {
+  html,
+  body,
+  #root,
+  main {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Scripture text never extends past screen edges */
+  .aged-parchment .scripture-text,
+  .scripture-text {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .aged-parchment {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Header wraps gracefully on narrow screens */
+  header,
+  .header-bar {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  header h1,
+  .header-bar h1 {
+    font-size: 1.15rem !important;
+  }
+
+  header > div,
+  .header-bar > div {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  /* Bottom action bar buttons stack vertically, full width */
+  .aged-parchment ~ div .flex.items-center.justify-center.gap-3 {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .aged-parchment ~ div .flex.items-center.justify-center.gap-3 button {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Maximize reading area on 360px screens */
+  .manuscript-card {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Timeline era labels scroll without overflowing */
+  .border-b .flex.items-center.gap-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  /* Drop cap doesn't steal too much width on narrow screens */
+  .drop-cap {
+    font-size: 3rem !important;
+  }
+}
